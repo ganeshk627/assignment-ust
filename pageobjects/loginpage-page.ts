@@ -43,7 +43,6 @@ export class LoginPage {
             await expect(this.page).not.toHaveURL('/inventory.html')
             await expect(this.ERROR_MESSAGE).toHaveText('Epic sadface: Sorry, this user has been locked out.')
             await expect(this.HEADER_LABEL).not.toBeVisible()
-
         } else {
             throw new Error('Please provide valid role!!!')
         }
