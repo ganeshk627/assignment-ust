@@ -1,18 +1,33 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pageobjects/loginpage-page';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+const login_datas = [
+  {"username":"standard_user", "password":"secret_sauce", "role":"standard_user"},
+  {"username":"locked_out_user", "password":"secret_sauce", "role":"locked_out_user"},
+  {"username":"performance_glitch_user", "password":"secret_sauce", "role":"performance_glitch_user"},
+  {"username":"error_user", "password":"secret_sauce", "role":"error_user"},
+  {"username":"visual_user", "password":"secret_sauce", "role":"visual_user"},
+]
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
+login_datas.forEach( login_data => {
+
+  test(`Login with Multiple Roles ${login_data.username}`, async ({ page }) => {
+    const loginPage = new LoginPage(page);
+
+    await test.step('Opening Saucelab page', async () => {
+      await page.goto('/');
+    });
+
+    await test.step('Logging with username and password', async () => {
+      await loginPage.login(login_data.username, login_data.password);
+    });
+
+    await test.step('Validating role', async () => {
+      await loginPage.validate_role(login_data.role);
+    });
+
+  });
 });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
